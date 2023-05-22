@@ -13,6 +13,8 @@ public class Player : MonoBehaviour
     
     private BoxCollider2D boxCollider;
 
+    private RaycastHit2D hit;
+
     private Vector2 movement;
     
 
