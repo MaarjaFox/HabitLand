@@ -24,6 +24,10 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
+        if (DialogueManager.GetInstance().dialogueIsPlaying)
+        {
+          return;
+        }
         movement.x = Input.GetAxisRaw("Horizontal");
         movement.y = Input.GetAxisRaw("Vertical");
 
@@ -31,9 +35,12 @@ public class Player : MonoBehaviour
         animator.SetFloat("Vertical", movement.y);
         animator.SetFloat("Speed", movement.sqrMagnitude);
 
+       
+
     }
     private void FixedUpdate()
     {
+       
         //movement
         rb.MovePosition(rb.position + movement * moveSpeed * Time.fixedDeltaTime);
         // Make sure we can move in this direction
