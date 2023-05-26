@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using Ink.Runtime;
 using UnityEngine.EventSystems;
+using UnityEngine.Audio;
 
 public class DialogueManager : MonoBehaviour
 {
@@ -22,6 +23,16 @@ public class DialogueManager : MonoBehaviour
    [SerializeField] private GameObject[] choices;
 
    private TextMeshProUGUI[] choicesText;
+   [Header("Audio")]
+   [SerializeField] private AudioClip dialogueTypingSoundClip;
+   [SerializeField] private AudioMixerGroup audioMixerGroup;
+   [SerializeField] private float minPitch = 1.5f;
+   [Range(-3, 3)]
+   [SerializeField] private float maxPitch = 3f;
+   
+
+   private AudioSource audioSource;
+   [SerializeField] private bool stopAudioSource;
 
    private Story currentStory;
 
@@ -40,6 +51,10 @@ public class DialogueManager : MonoBehaviour
         Debug.LogWarning("Found more than one Dialogue Manager in the scene");
     }
      instance = this;
+
+     audioSource = this.gameObject.AddComponent<AudioSource>();
+     audioSource.outputAudioMixerGroup = audioMixerGroup;
+
    }
 
    public static DialogueManager GetInstance()
@@ -148,7 +163,11 @@ private void Update()
         //if not rich text, add the next letter and wait a small time
         else
         {
+            
+            PlayDialogueSound(dialogueText.text.Length);
             dialogueText.text += letter;
+            
+            
             yield return new WaitForSeconds(typingSpeed);
         }
 
@@ -158,7 +177,18 @@ private void Update()
     DisplayChoices();
 
    }
-
+    private void PlayDialogueSound(int currentDisplayedCharacterCount)
+    {
+        if (currentDisplayedCharacterCount % 2 == 0)
+        {
+             if(stopAudioSource)
+            {
+                audioSource.Stop();
+            }
+            audioSource.pitch = Random.Range(minPitch, maxPitch);
+            audioSource.PlayOneShot(dialogueTypingSoundClip);
+        }
+    }
    private void HideChoices()
    {
     foreach (GameObject choiceButton in choices)

@@ -59,9 +59,21 @@ public class Player : MonoBehaviour
     
        // if(isAlive)
        //     UpdateMotor(new Vector3(moveDelta.x, moveDelta.y, 0));
-
-    
-    
-       
+       if (movement != Vector2.zero)
+        {
+            StartCoroutine(DestroyObjectsWithDelay(3f));
+        }   
     }
+   private IEnumerator DestroyObjectsWithDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+
+        GameObject[] moveKeys = GameObject.FindGameObjectsWithTag("MoveKeys");
+
+        foreach (GameObject moveKey in moveKeys)
+        {
+            Destroy(moveKey);
+        }
+    }
+
 }
