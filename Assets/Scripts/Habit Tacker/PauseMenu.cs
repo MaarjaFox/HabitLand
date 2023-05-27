@@ -1,23 +1,93 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class PauseMenu : MonoBehaviour
 {
-    public GameObject habitTrackerPanel; // Reference to the habit tracker panel
+    public static bool GameIsPaused = false;
 
-    private bool isHabitTrackerOpen;
+    public GameObject pauseMenuUI;
+    
 
-    // Called when the pause menu is opened
-    private void OnEnable()
+    public GameObject optionsScreen;
+    
+    public GameObject helpScreen;
+
+    public GameObject trackerScreen;
+
+    public Button pauseButton; 
+
+    void Update ()
     {
-        isHabitTrackerOpen = false;
-        habitTrackerPanel.SetActive(false);
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if(GameIsPaused)
+            {
+                Resume();
+            } else
+            {
+                Pause();
+            }
+        }
     }
 
-    // Toggle the habit tracker panel
-    public void ToggleHabitTracker()
+    public void Resume ()
     {
-        isHabitTrackerOpen = !isHabitTrackerOpen;
-        habitTrackerPanel.SetActive(isHabitTrackerOpen);
+        pauseMenuUI.SetActive(false);
+        Time.timeScale = 1f;
+        GameIsPaused = false;
+        pauseButton.gameObject.SetActive(true);
     }
+    void Pause ()
+    {
+        pauseMenuUI.SetActive(true);
+        Time.timeScale = 0f;
+        GameIsPaused = true;
+
+        pauseButton.gameObject.SetActive(false); // Deactivate the pause button
+    }
+
+    public void LoadMenu()
+    {
+        Time.timeScale = 1f;
+        SceneManager.LoadScene("Main Menu");
+    }
+
+    public void QuitGame()
+    {
+        Debug.Log("Quitting");
+        Application.Quit();
+    }
+
+    public void OpenOptions()
+    {
+        optionsScreen.SetActive(true);
+    }
+
+    public void CloseOptions()
+    {
+        optionsScreen.SetActive(false);
+    }
+
+    public void OpenHelp()
+    {
+        helpScreen.SetActive(true);
+    }
+
+    public void CloseHelp()
+    {
+        helpScreen.SetActive(false);
+    }
+
+    public void OpenTracker()
+    {
+        trackerScreen.SetActive(true);
+    }
+
+    public void CloseTracker()
+    {
+        trackerScreen.SetActive(false);
+    }
+    
 }
