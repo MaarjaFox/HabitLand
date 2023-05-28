@@ -1,16 +1,13 @@
-using System.Collections.Generic;
-using UnityEngine;
-
 [System.Serializable]
-public class HabitData
+public class Habit
 {
-    public string Name;
-    public bool IsCompleted;
-    public int XpPoints;
-    public int Coins;
-}
+    public string habitName;
+    // Add more properties if needed
 
-public class Habit : MonoBehaviour
-{
-    public List<HabitData> habits = new List<HabitData>();
+    public Habit() { }
+
+    public Habit(string name)
+    {
+        habitName = name;
+    }
 }

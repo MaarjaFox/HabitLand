@@ -18,6 +18,8 @@ public class PauseMenu : MonoBehaviour
 
     public Button pauseButton; 
 
+    public GameObject addScreen;
+
     void Update ()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -89,5 +91,13 @@ public class PauseMenu : MonoBehaviour
     {
         trackerScreen.SetActive(false);
     }
-    
+    public void OpenAdd()
+    {
+        addScreen.SetActive(true);
+    }
+
+    public void CloseAdd()
+    {
+        addScreen.SetActive(false);
+    }
 }

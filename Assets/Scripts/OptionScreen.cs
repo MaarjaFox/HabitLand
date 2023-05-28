@@ -18,18 +18,25 @@ public class OptionScreen : MonoBehaviour
    {
     fullsceenTog.isOn = Screen.fullScreen;
 
-    float vol = 0f;
-    theMixer.GetFloat("MasterVol", out vol);
-    mastSlider.value = vol;
-    theMixer.GetFloat("MusicVol", out vol);
-    musicSlider.value = vol;
-    theMixer.GetFloat("SFXVol", out vol);
-    sfxSlider.value = vol;
-    
-    mastLabel.text = (mastSlider.value + 80).ToString();
-    musicLabel.text = (musicSlider.value + 80).ToString();
-    sfxLabel.text = (sfxSlider.value + 80).ToString();
-    
+    // Retrieve the saved volume values from PlayerPrefs
+    float masterVol = PlayerPrefs.GetFloat("MasterVol", 0f);
+    float musicVol = PlayerPrefs.GetFloat("MusicVol", 0f);
+    float sfxVol = PlayerPrefs.GetFloat("SFXVol", 0f);
+
+    // Update the slider positions
+    mastSlider.value = masterVol;
+    musicSlider.value = musicVol;
+    sfxSlider.value = sfxVol;
+
+    // Apply the updated volume settings to the audio mixer
+    theMixer.SetFloat("MasterVol", masterVol);
+    theMixer.SetFloat("MusicVol", musicVol);
+    theMixer.SetFloat("SFXVol", sfxVol);
+
+    // Update the label texts
+    mastLabel.text = (masterVol + 80).ToString();
+    musicLabel.text = (musicVol + 80).ToString();
+    sfxLabel.text = (sfxVol + 80).ToString();
    }
 
    public void ApplyGraphics()
@@ -45,6 +52,8 @@ public class OptionScreen : MonoBehaviour
         theMixer.SetFloat("MasterVol", mastSlider.value);
 
         PlayerPrefs.SetFloat("MasterVol", mastSlider.value);
+
+        PlayerPrefs.Save();
    }
     public void SetMusicVol()
    {
@@ -53,6 +62,8 @@ public class OptionScreen : MonoBehaviour
         theMixer.SetFloat("MusicVol", musicSlider.value);
 
         PlayerPrefs.SetFloat("MusicVol", musicSlider.value);
+
+        PlayerPrefs.Save();
    }
     public void SetSFXVol()
    {
@@ -61,5 +72,7 @@ public class OptionScreen : MonoBehaviour
         theMixer.SetFloat("SFXVol", sfxSlider.value);
 
         PlayerPrefs.SetFloat("SFXVol", sfxSlider.value);
+
+        PlayerPrefs.Save();
    }
 }
