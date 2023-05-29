@@ -20,6 +20,10 @@ public class PauseMenu : MonoBehaviour
 
     public GameObject addScreen;
 
+    public GameObject tipsScreen;
+
+    public GameObject habitHelpScreen;
+
     void Update ()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -100,4 +104,16 @@ public class PauseMenu : MonoBehaviour
     {
         addScreen.SetActive(false);
     }
+
+    public void OpenTips()
+    {
+        tipsScreen.SetActive(true);
+    }
+
+    public void CloseTips()
+    {
+        tipsScreen.SetActive(false);
+    }
+
+    
 }
