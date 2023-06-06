@@ -7,11 +7,14 @@ public class HabitEntryController : MonoBehaviour
     public Habit habit;
     public int habitIndex;
 
-    private Toggle[] toggleButtons;
+    public Toggle[] toggleButtons;
 
     private void Start()
     {
         toggleButtons = GetComponentsInChildren<Toggle>();
+
+        // Set the toggles to be invisible initially
+        SetTogglesVisibility(false);
 
         LoadToggleStates();
         DisplayHabitOutput();
@@ -45,5 +48,16 @@ public class HabitEntryController : MonoBehaviour
     {
         habitOutputText.text = habit.habitName;
         Debug.Log("Displaying Habit Output: " + habitOutputText.text);
+
+        // Set the toggles to be visible
+        SetTogglesVisibility(true);
+    }
+
+    private void SetTogglesVisibility(bool visible)
+    {
+        for (int i = 1; i < toggleButtons.Length; i++) // Start at index 1 to skip the habitOutputText toggle
+        {
+            toggleButtons[i].gameObject.SetActive(visible);
+        }
     }
 }

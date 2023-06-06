@@ -10,11 +10,8 @@ public class HabitManager : MonoBehaviour
     public InputField habitInputField;
     public Button addHabitButton;
 
-   
-
     private List<Habit> habits;
     private string habitInput;
-    private bool habitsAdded = false;
 
     private void Awake()
     {
@@ -28,21 +25,22 @@ public class HabitManager : MonoBehaviour
     }
 
     public void AddHabit()
-{
-    string habitName = habitInputField.text;
-    if (!string.IsNullOrEmpty(habitName))
     {
-        Habit newHabit = new Habit(habitName);
-        habits.Add(newHabit);
-        CreateHabitEntry(newHabit);
-        habitInputField.text = string.Empty;
-        
+        string habitName = habitInputField.text;
+        if (!string.IsNullOrEmpty(habitName))
+        {
+            Habit newHabit = new Habit(habitName);
+            habits.Add(newHabit);
+            CreateHabitEntry(newHabit);
+            habitInputField.text = string.Empty;
+        }
     }
-}
 
- private void CreateHabitEntry(Habit habit)
+    private void CreateHabitEntry(Habit habit)
 {
     GameObject habitEntry = Instantiate(habitEntryPrefab, calendarPanel);
+    habitEntry.SetActive(false); // Hide the habitEntry prefab initially
+
     Text habitNameText = habitEntry.GetComponentInChildren<Text>();
     habitNameText.text = habit.habitName;
 
@@ -53,20 +51,26 @@ public class HabitManager : MonoBehaviour
 
     HabitEntryController entryController = habitEntry.GetComponent<HabitEntryController>();
     entryController.habit = habit;
+    entryController.habitIndex = habits.Count - 1; // Set the correct habit index
+
+    // Make sure the toggleButtons array is initialized
+    entryController.toggleButtons = entryController.GetComponentsInChildren<Toggle>();
+
     entryController.DisplayHabitOutput();
 
-    SetToggleVisibility(habitEntry, false); // Initially hide the toggles
+    SetToggleVisibility(habitEntry, true); // Show the toggles for the newly added habit
+
+    habitEntry.SetActive(true); // Show the habitEntry prefab
 }
 
-private void SetToggleVisibility(GameObject habitEntry, bool visible)
-{
-    Toggle[] dayToggles = habitEntry.GetComponentsInChildren<Toggle>();
-    foreach (Toggle toggle in dayToggles)
+    private void SetToggleVisibility(GameObject habitEntry, bool visible)
     {
-        toggle.gameObject.SetActive(visible);
+        Toggle[] dayToggles = habitEntry.GetComponentsInChildren<Toggle>();
+        foreach (Toggle toggle in dayToggles)
+        {
+            toggle.gameObject.SetActive(visible);
+        }
     }
-}
-
 
     public void SetHabitInput(string input)
     {
@@ -77,6 +81,4 @@ private void SetToggleVisibility(GameObject habitEntry, bool visible)
     {
         return habitInput;
     }
-
-    
 }
