@@ -14,7 +14,7 @@ public class HabitEntryController : MonoBehaviour
         toggleButtons = GetComponentsInChildren<Toggle>();
 
         // Set the toggles to be invisible initially
-        SetTogglesVisibility(false);
+        SetTogglesVisibility(true);
 
         LoadToggleStates();
         DisplayHabitOutput();
@@ -55,7 +55,7 @@ public class HabitEntryController : MonoBehaviour
 
     private void SetTogglesVisibility(bool visible)
     {
-        for (int i = 1; i < toggleButtons.Length; i++) // Start at index 1 to skip the habitOutputText toggle
+        for (int i = 0; i < toggleButtons.Length; i++) // Start at index 1 to skip the habitOutputText toggle
         {
             toggleButtons[i].gameObject.SetActive(visible);
         }
