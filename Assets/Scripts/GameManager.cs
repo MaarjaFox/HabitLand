@@ -122,6 +122,7 @@ public class GameManager : MonoBehaviour
         s += coins.ToString() + "|";
         s += experience.ToString() + "|";
         s += weapon.weaponLevel.ToString();
+        s += "0";
         s += habitManager.GetHabitData(); // Get the habit data from the HabitManager
 
         PlayerPrefs.SetString("SaveState", s);
