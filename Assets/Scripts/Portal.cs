@@ -11,6 +11,8 @@ public class Portal : Collidable
     {
         if (coll.name == "Player")
         {
+            GameManager.instance.SaveState();
+            
             SceneManager.LoadScene(sceneName);
         }
     }

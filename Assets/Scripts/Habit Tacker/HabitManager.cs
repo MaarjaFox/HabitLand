@@ -15,6 +15,8 @@ public class HabitManager : MonoBehaviour
     private string habitInput;
     private int nextAvailableIndex; // Track the next available index for habits
 
+    private const string HabitDataKey = "HabitData";
+
     private void Awake()
     {
         instance = this;
@@ -25,6 +27,8 @@ public class HabitManager : MonoBehaviour
         habits = new List<Habit>();
         nextAvailableIndex = 0; // Initialize the next available index to 0
         addHabitButton.onClick.AddListener(AddHabit);
+
+        LoadHabitData(); // Load the habit data from PlayerPrefs
     }
 
     public void AddHabit()
@@ -53,6 +57,8 @@ public class HabitManager : MonoBehaviour
             habits.Add(newHabit);
             CreateHabitEntry(newHabit);
             habitInputField.text = string.Empty;
+
+            SaveHabitData(); // Save the updated habit data
         }
     }
 
@@ -83,9 +89,39 @@ public class HabitManager : MonoBehaviour
         habit.entryController = entryController; // Set the entryController property of the Habit class
         entryController.DisplayHabitOutput();
 
+        // Save and load the toggle states
+        //entryController.SaveToggleStates();
+        //entryController.LoadToggleStates();
+
         SetToggleVisibility(habitEntry, true); // Show the toggles for the newly added habit
 
         habitEntry.SetActive(true); // Show the habitEntry prefab
+    }
+
+     private void SaveHabitData()
+    {
+        string habitData = GetHabitData();
+        PlayerPrefs.SetString(HabitDataKey, habitData);
+        PlayerPrefs.Save();
+
+        foreach (Habit habit in habits)
+        {
+            habit.entryController.SaveToggleStates();
+        }
+    }
+
+    private void LoadHabitData()
+    {
+        if (PlayerPrefs.HasKey(HabitDataKey))
+        {
+            string habitData = PlayerPrefs.GetString(HabitDataKey);
+            SetHabitData(habitData);
+        }
+
+        foreach (Habit habit in habits)
+        {
+            habit.entryController.LoadToggleStates();
+        }
     }
 
     private void SetToggleVisibility(GameObject habitEntry, bool visible)
@@ -107,27 +143,29 @@ public class HabitManager : MonoBehaviour
         return habitInput;
     }
 
- public void DeleteHabit(GameObject habitEntry)
-{
-    int habitIndex = habitEntry.GetComponent<HabitEntryController>().habitIndex;
-    Habit habit = habits[habitIndex];
-
-    habits.RemoveAt(habitIndex);
-    Destroy(habitEntry);
-
-    // Mark the habit as inactive
-    habit.isActive = false;
-
-    // Update the indices of the remaining habits (if any)
-    for (int i = habitIndex; i < habits.Count; i++)
+    public void DeleteHabit(GameObject habitEntry)
     {
-        // Only update the habit index in the corresponding HabitEntryController
-        if (habits[i].entryController != null)
+        int habitIndex = habitEntry.GetComponent<HabitEntryController>().habitIndex;
+        Habit habit = habits[habitIndex];
+
+        habits.RemoveAt(habitIndex);
+        Destroy(habitEntry);
+
+        // Mark the habit as inactive
+        habit.isActive = false;
+
+        // Update the indices of the remaining habits (if any)
+        for (int i = habitIndex; i < habits.Count; i++)
         {
-            habits[i].entryController.habitIndex = i;
+            // Only update the habit index in the corresponding HabitEntryController
+            if (habits[i].entryController != null)
+            {
+                habits[i].entryController.habitIndex = i;
+            }
         }
+
+        SaveHabitData();
     }
-}
 
     private int GetNextAvailableIndex()
     {
@@ -150,4 +188,61 @@ public class HabitManager : MonoBehaviour
 
         return maxIndex + 1;
     }
+
+    // Method to get the habit data as a string
+    public string GetHabitData()
+    {
+        string habitData = "";
+
+        foreach (Habit habit in habits)
+        {
+            habitData += habit.index + ";" + habit.habitName + ";" + habit.isActive.ToString() + "|";
+        }
+
+        return habitData;
+    }
+
+    // Method to set the habit data from a string
+    public void SetHabitData(string habitData)
+{
+    habits.Clear(); // Clear the current habits list
+
+    string[] habitEntries = habitData.Split('|');
+
+    foreach (string entry in habitEntries)
+    {
+        if (!string.IsNullOrEmpty(entry))
+        {
+            string[] habitInfo = entry.Split(';');
+            int index = int.Parse(habitInfo[0]);
+            string habitName = habitInfo[1];
+            bool isActive = bool.Parse(habitInfo[2]);
+
+            Habit habit = new Habit(habitName);
+            habit.index = index;
+            habit.isActive = isActive;
+
+            habits.Add(habit);
+
+            // Check if the habit entry prefab is assigned
+            if (habitEntryPrefab != null)
+            {
+                CreateHabitEntry(habit); // Recreate the habit entry in the UI
+            }
+        }
+    }
+}
+
+    private void OnDisable()
+    {
+        SaveHabitData();
+        
+    }
+
+    private void OnEnable()
+    {
+        LoadHabitData();
+        
+    }
+
 }

@@ -20,4 +20,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Home.unity
     guid: 31db6655273901347a875c99428b0eb6
+  - enabled: 1
+    path: Assets/Scenes/DarkForest.unity
+    guid: f88605a1ba5a3c9459348b7172dbb45c
   m_configObjects: {}

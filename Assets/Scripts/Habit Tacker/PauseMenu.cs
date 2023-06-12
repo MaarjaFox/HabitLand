@@ -2,6 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 public class PauseMenu : MonoBehaviour
 {
@@ -9,7 +10,6 @@ public class PauseMenu : MonoBehaviour
 
     public GameObject pauseMenuUI;
     
-
     public GameObject optionsScreen;
     
     public GameObject helpScreen;
@@ -24,6 +24,61 @@ public class PauseMenu : MonoBehaviour
 
     public GameObject habitHelpScreen;
 
+    public GameObject shopScreen;
+
+    //text fields
+    public TMP_Text levelText, hitpointText, coinsText, upgradeCostText, xpText;
+
+    //Logic
+    public Image weaponSprite;
+    public RectTransform xpBar;
+
+    //weapon upgrade
+    public void OnUpgradeClick()
+    {
+       if(GameManager.instance.TryUpgradeWeapon())
+          UpdateMenu();
+    }
+
+    //Update the character information
+    public void UpdateMenu()
+    {
+        //Weapon
+        weaponSprite.sprite = GameManager.instance.weaponSprites[GameManager.instance.weapon.weaponLevel];
+        if(GameManager.instance.weapon.weaponLevel == GameManager.instance.weaponPrices.Count)
+        upgradeCostText.text = "MAX";
+
+        else
+            upgradeCostText.text = GameManager.instance.weaponPrices[GameManager.instance.weapon.weaponLevel].ToString();
+
+        // Meta
+        levelText.text = GameManager.instance.GetCurrentLevel().ToString();
+        hitpointText.text = GameManager.instance.player.hitpoint.ToString();
+        coinsText.text = GameManager.instance.coins.ToString();
+      
+
+        //xp Bar
+        int currLevel = GameManager.instance.GetCurrentLevel();
+        if(currLevel == GameManager.instance.xpTable.Count)
+        {
+            xpText.text = GameManager.instance.experience.ToString() + " total experience points"; //Display total xp
+            xpBar.localScale = Vector3.one;
+        }
+        else
+        {
+            int preLevelXp = GameManager.instance.GetXpToLevel(currLevel - 1);
+            int currLevelXP = GameManager.instance.GetXpToLevel(currLevel);
+
+            int diff = currLevelXP - preLevelXp;
+            int currXpIntoLevel = GameManager.instance.experience - preLevelXp;
+
+            float completionRatio = (float)currXpIntoLevel / (float)diff;
+            xpBar.localScale = new Vector3(completionRatio, 1, 1);
+            xpText.text = currXpIntoLevel.ToString() + "/" + diff;
+        }
+
+    }
+
     void Update ()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -33,6 +88,7 @@ public class PauseMenu : MonoBehaviour
                 Resume();
             } else
             {
+                UpdateMenu();
                 Pause();
             }
         }
@@ -44,6 +100,7 @@ public class PauseMenu : MonoBehaviour
         Time.timeScale = 1f;
         GameIsPaused = false;
         pauseButton.gameObject.SetActive(true);
+        
     }
     void Pause ()
     {
@@ -52,6 +109,7 @@ public class PauseMenu : MonoBehaviour
         GameIsPaused = true;
 
         pauseButton.gameObject.SetActive(false); // Deactivate the pause button
+        
     }
 
     public void LoadMenu()
@@ -74,6 +132,16 @@ public class PauseMenu : MonoBehaviour
     public void CloseOptions()
     {
         optionsScreen.SetActive(false);
+    }
+
+     public void OpenShop()
+    {
+        shopScreen.SetActive(true);
+    }
+
+    public void CloseShop()
+    {
+        shopScreen.SetActive(false);
     }
 
     public void OpenHelp()

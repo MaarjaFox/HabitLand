@@ -4,23 +4,30 @@ using UnityEngine;
 
 
 
-public class Player : MonoBehaviour
+public class Player : Mover
 {
     public float moveSpeed = 5f;
 
     public Rigidbody2D rb;
     public Animator animator;
+    private SpriteRenderer spriteRenderer;
     
-    private BoxCollider2D boxCollider;
+    //private BoxCollider2D boxCollider;
 
     private RaycastHit2D hit;
 
-    private Vector2 movement;
+    //private Vector2 movement;
+    
     
 
-    private void Start()
+    protected override  void Start()
     {
-      boxCollider = GetComponent<BoxCollider2D>();
+      //boxCollider = GetComponent<BoxCollider2D>();
+      base.Start();
+      spriteRenderer = GetComponent<SpriteRenderer>();
+
+      DontDestroyOnLoad(gameObject);
+
     }
     void Update()
     {
@@ -58,22 +65,20 @@ public class Player : MonoBehaviour
         //}
     
        // if(isAlive)
-       //     UpdateMotor(new Vector3(moveDelta.x, moveDelta.y, 0));
-       if (movement != Vector2.zero)
-        {
-            StartCoroutine(DestroyObjectsWithDelay(3f));
-        }   
+       //UpdateMotor(new Vector3(moveDelta.x, moveDelta.y, 0));
+       
+     
     }
-   private IEnumerator DestroyObjectsWithDelay(float delay)
+
+    public void OnLevelUp()
     {
-        yield return new WaitForSeconds(delay);
-
-        GameObject[] moveKeys = GameObject.FindGameObjectsWithTag("MoveKeys");
-
-        foreach (GameObject moveKey in moveKeys)
-        {
-            Destroy(moveKey);
-        }
+        maxHitpoint++;
+        hitpoint = maxHitpoint;
+    }
+    public void SetLevel(int level)
+    {
+        for(int i = 0; i < level; i++)
+            OnLevelUp();
     }
 
 }

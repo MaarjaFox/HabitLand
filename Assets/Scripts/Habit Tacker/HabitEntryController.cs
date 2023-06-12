@@ -6,6 +6,8 @@ public class HabitEntryController : MonoBehaviour
     public Text habitOutputText;
     public Habit habit;
     public int habitIndex;
+    public int coinsAmount = 5;
+    public int xpValue = 1;
 
     public Toggle[] toggleButtons;
 
@@ -14,34 +16,24 @@ public class HabitEntryController : MonoBehaviour
         toggleButtons = GetComponentsInChildren<Toggle>();
 
         // Set the toggles to be invisible initially
-        SetTogglesVisibility(true);
+        SetTogglesVisibility(false);
 
         LoadToggleStates();
         DisplayHabitOutput();
+        
     }
 
     public void OnToggleChanged()
     {
         SaveToggleStates();
         DisplayHabitOutput();
-    }
+        Debug.Log("Grant " + coinsAmount + " coins!");
+        
+        GameManager.instance.GrantXp(xpValue);
+        GameManager.instance.ShowText("+" + xpValue + " xp ", 30, Color.magenta, transform.position, Vector3.up * 40, 1.0f);
 
-    private void LoadToggleStates()
-    {
-        for (int i = 0; i < toggleButtons.Length; i++)
-        {
-            bool isToggleOn = PlayerPrefs.GetInt("ToggleState_" + habitIndex + "_" + i, 0) == 1;
-            toggleButtons[i].isOn = isToggleOn;
-        }
-    }
-
-    private void SaveToggleStates()
-    {
-        for (int i = 0; i < toggleButtons.Length; i++)
-        {
-            bool isToggleOn = toggleButtons[i].isOn;
-            PlayerPrefs.SetInt("ToggleState_" + habitIndex + "_" + i, isToggleOn ? 1 : 0);
-        }
+        GameManager.instance.coins += coinsAmount;
+        GameManager.instance.ShowText("+" + coinsAmount + " habit coins!",25,Color.yellow,transform.position,Vector3.up * 25, 3.0f);
     }
 
     public void DisplayHabitOutput()
@@ -55,9 +47,37 @@ public class HabitEntryController : MonoBehaviour
 
     private void SetTogglesVisibility(bool visible)
     {
-        for (int i = 0; i < toggleButtons.Length; i++) // Start at index 1 to skip the habitOutputText toggle
+        for (int i = 0; i < toggleButtons.Length; i++)
         {
             toggleButtons[i].gameObject.SetActive(visible);
         }
+    }
+
+    public void SaveToggleStates()
+    {
+        foreach (Toggle toggle in toggleButtons)
+        {
+            PlayerPrefs.SetInt(GetToggleKey(toggle), toggle.isOn ? 1 : 0);
+        }
+        PlayerPrefs.Save();
+    }
+
+    public void LoadToggleStates()
+    {
+        foreach (Toggle toggle in toggleButtons)
+        {
+            int toggleState = PlayerPrefs.GetInt(GetToggleKey(toggle), 0);
+            toggle.isOn = toggleState == 1;
+        }
+    }
+
+    private string GetToggleKey(Toggle toggle)
+    {
+        return "ToggleState_" + habitIndex + "_" + toggle.gameObject.name;
+    }
+
+    public void DeleteHabit()
+    {
+        HabitManager.instance.DeleteHabit(gameObject);
     }
 }
