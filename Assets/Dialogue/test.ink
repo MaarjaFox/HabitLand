@@ -26,14 +26,20 @@ Welcome to Habitland!! #speaker:Luna #portrait:catneutral
 -> third
 === third ===
 
-Anyways, let's get to the point.. #speaker:Luna #portrait:catneutral
-Good Habits are crucial here...To get stronger and to survive.
+Anyway, let's get to the point.. #speaker:Luna #portrait:catneutral
+Good habits are crucial here...
 
-In the dark forest, there are terrifying creatures..
+Not only to get stronger but also to survive.
 
-You must eliminate them...
+In the Dark Forest, there are terrifying creatures lurking...
 
-But right now...You must get stronger.
+To reach the forest, head east and follow the road. 
+
+The deeper you go into the forest, the stronger they become.
+
+We must clear out the forest from the curse that plagues it.
+
+Good luck and let's meet there again!
 
 
 -> END

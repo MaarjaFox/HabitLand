@@ -6,8 +6,8 @@ public class HabitEntryController : MonoBehaviour
     public Text habitOutputText;
     public Habit habit;
     public int habitIndex;
-    public int coinsAmount = 5;
-    public int xpValue = 1;
+    //public int coinsAmount = 5;
+    //public int xpValue = 1;
 
     public Toggle[] toggleButtons;
 
@@ -27,14 +27,27 @@ public class HabitEntryController : MonoBehaviour
     {
         SaveToggleStates();
         DisplayHabitOutput();
-        Debug.Log("Grant " + coinsAmount + " coins!");
-        
-        GameManager.instance.GrantXp(xpValue);
-        GameManager.instance.ShowText("+" + xpValue + " xp ", 30, Color.magenta, transform.position, Vector3.up * 40, 1.0f);
 
-        GameManager.instance.coins += coinsAmount;
-        GameManager.instance.ShowText("+" + coinsAmount + " habit coins!",25,Color.yellow,transform.position,Vector3.up * 25, 3.0f);
+        int xpValue = 10; // Set the XP value for each toggle
+        int coinsAmount = 5; // Set the coins amount for each toggle
+
+        // Check each toggle and grant rewards if checked
+        for (int i = 0; i < toggleButtons.Length; i++)
+        {
+            if (toggleButtons[i].isOn)
+            {
+                // Grant XP reward
+                GameManager.instance.GrantXp(xpValue);
+                GameManager.instance.ShowText("+" + xpValue + " xp ", 30, Color.magenta, transform.position, Vector3.up * 40, 1.0f);
+
+                // Grant coins reward
+                GameManager.instance.coins += coinsAmount;
+                GameManager.instance.ShowText("+" + coinsAmount + " habit coins!", 25, Color.yellow, transform.position, Vector3.up * 25, 3.0f);
+            }
+        }
     }
+
+
 
     public void DisplayHabitOutput()
     {

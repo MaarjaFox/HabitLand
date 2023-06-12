@@ -143,29 +143,31 @@ public class HabitManager : MonoBehaviour
         return habitInput;
     }
 
-    public void DeleteHabit(GameObject habitEntry)
+   public void DeleteHabit(GameObject habitEntry)
+{
+    HabitEntryController entryController = habitEntry.GetComponent<HabitEntryController>();
+    Habit habit = entryController.habit;
+
+    habits.Remove(habit);
+    Destroy(habitEntry);
+
+    // Mark the habit as inactive
+    habit.isActive = false;
+
+    // Update the indices of the remaining habits (if any)
+    for (int i = 0; i < habits.Count; i++)
     {
-        int habitIndex = habitEntry.GetComponent<HabitEntryController>().habitIndex;
-        Habit habit = habits[habitIndex];
+        habits[i].index = i;
 
-        habits.RemoveAt(habitIndex);
-        Destroy(habitEntry);
-
-        // Mark the habit as inactive
-        habit.isActive = false;
-
-        // Update the indices of the remaining habits (if any)
-        for (int i = habitIndex; i < habits.Count; i++)
+        // Only update the habit index in the corresponding HabitEntryController
+        if (habits[i].entryController != null)
         {
-            // Only update the habit index in the corresponding HabitEntryController
-            if (habits[i].entryController != null)
-            {
-                habits[i].entryController.habitIndex = i;
-            }
+            habits[i].entryController.habitIndex = i;
         }
-
-        SaveHabitData();
     }
+
+    SaveHabitData();
+}
 
     private int GetNextAvailableIndex()
     {

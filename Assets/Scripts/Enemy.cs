@@ -5,7 +5,9 @@ using UnityEngine;
 public class Enemy : Mover
 {
     //EXP
-    public int xpValue = 1;
+    public int xpValue = 15;
+
+    public int coinsAmount = 5;
 
     //Logic
 
@@ -81,5 +83,8 @@ public class Enemy : Mover
         Destroy(gameObject);
         GameManager.instance.GrantXp(xpValue);
         GameManager.instance.ShowText("+" + xpValue + " xp ", 30, Color.magenta, transform.position, Vector3.up * 40, 1.0f);
+
+        GameManager.instance.coins += coinsAmount;
+        GameManager.instance.ShowText("+" + coinsAmount + " habit coins!", 25, Color.yellow, transform.position, Vector3.up * 25, 3.0f);
     }
 }
